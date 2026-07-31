@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sonal Honny — Systems & Verse</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;1,9..144,500&family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#12182B;
+    --ink-soft:#1B2340;
+    --paper:#F7F1E6;
+    --paper-dim:#EFE7D6;
+    --teal:#2FA79B;
+    --rose:#A34B63;
+    --gold:#C9A227;
+    --slate:#5B6270;
+    --line: rgba(255,255,255,0.12);
+    --line-dark: rgba(18,24,43,0.14);
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:'Inter', sans-serif;
+    line-height:1.6;
+  }
+  @media (prefers-reduced-motion: reduce){
+    html{scroll-behavior:auto;}
+    *{animation-duration:0.01ms !important; transition-duration:0.01ms !important;}
+  }
+  a{color:inherit;}
+
+  /* ---------- NAV ---------- */
+  nav{
+    position:sticky; top:0; z-index:50;
+    display:flex; align-items:center; justify-content:space-between;
+    padding:16px 6vw;
+    background:rgba(247,241,230,0.88);
+    backdrop-filter:blur(6px);
+    border-bottom:1px solid var(--line-dark);
+  }
+  .brand{
+    font-family:'JetBrains Mono', monospace;
+    font-weight:700; font-size:15px; letter-spacing:0.02em;
+  }
+  .brand span{color:var(--rose);}
+  .navlinks{display:flex; gap:26px; font-size:14px; font-family:'JetBrains Mono', monospace;}
+  .navlinks a{text-decoration:none; color:var(--slate); position:relative;}
+  .navlinks a:hover{color:var(--ink);}
+  .navlinks a:focus-visible, a:focus-visible{outline:2px solid var(--teal); outline-offset:3px; border-radius:2px;}
+  @media (max-width:720px){ .navlinks{display:none;} }
+
+  /* ---------- HERO : the seam ---------- */
+  .hero{
+    display:grid;
+    grid-template-columns:1.1fr 1fr;
+    min-height:88vh;
+  }
+  @media (max-width:860px){ .hero{grid-template-columns:1fr;} }
+
+  .hero-system{
+    background:var(--ink);
+    color:#E8EAF3;
+    padding:9vh 5vw;
+    display:flex; flex-direction:column; justify-content:center;
+    position:relative;
+    clip-path:polygon(0 0, 100% 0, 92% 100%, 0% 100%);
+  }
+  @media (max-width:860px){ .hero-system{clip-path:none;} }
+
+  .eyebrow{
+    font-family:'JetBrains Mono', monospace;
+    color:var(--teal);
+    font-size:13px;
+    letter-spacing:0.08em;
+    margin-bottom:18px;
+  }
+  .terminal{
+    font-family:'JetBrains Mono', monospace;
+    font-size:13.5px;
+    color:#9FD8CF;
+    line-height:1.9;
+    min-height:170px;
+    white-space:pre-wrap;
+  }
+  .terminal .cursor{
+    display:inline-block; width:8px; height:15px; background:#9FD8CF;
+    animation:blink 1s steps(1) infinite; vertical-align:-2px;
+  }
+  @keyframes blink{50%{opacity:0;}}
+
+  .hero-name{
+    font-family:'Fraunces', serif;
+    font-size:clamp(34px, 5vw, 56px);
+    font-weight:600;
+    margin:22px 0 6px;
+    color:#fff;
+  }
+  .hero-tag{
+    font-size:16px; color:#B8BCCE; max-width:36ch;
+  }
+
+  .hero-verse{
+    background:var(--paper);
+    padding:9vh 5vw;
+    display:flex; flex-direction:column; justify-content:center;
+    position:relative;
+  }
+  .verse-label{
+    font-family:'JetBrains Mono', monospace;
+    color:var(--rose);
+    font-size:13px; letter-spacing:0.08em; margin-bottom:18px;
+  }
+  .poem-line{
+    font-family:'Fraunces', serif;
+    font-style:italic;
+    font-size:clamp(20px, 2.6vw, 27px);
+    color:var(--ink);
+    opacity:0;
+    transform:translateY(6px);
+    transition:opacity 1.1s ease, transform 1.1s ease;
+    max-width:30ch;
+  }
+  .poem-line.show{opacity:1; transform:translateY(0);}
+  .poem-sign{
+    margin-top:22px; font-family:'JetBrains Mono', monospace; font-size:13px; color:var(--slate);
+  }
+
+  /* ---------- SECTIONS ---------- */
+  section{ padding:9vh 6vw; max-width:1180px; margin:0 auto; }
+  .section-head{ display:flex; align-items:baseline; gap:14px; margin-bottom:44px; }
+  .section-num{ font-family:'JetBrains Mono', monospace; color:var(--teal); font-size:14px; }
+  .section-title{ font-family:'Fraunces', serif; font-size:clamp(26px,3.4vw,36px); font-weight:600; }
+  .rule{ height:1px; background:var(--line-dark); flex:1; margin-left:8px; }
+
+  .reveal{ opacity:0; transform:translateY(16px); transition:opacity .7s ease, transform .7s ease; }
+  .reveal.show{ opacity:1; transform:translateY(0); }
+
+  /* about */
+  .about-grid{ display:grid; grid-template-columns:1.3fr 1fr; gap:60px; }
+  @media (max-width:820px){ .about-grid{grid-template-columns:1fr;} }
+  .about-grid p{ font-size:16.5px; color:#2B3145; max-width:62ch; }
+  .about-grid p + p{ margin-top:16px; }
+  .fact-card{
+    border:1px solid var(--line-dark); border-radius:10px; padding:20px 22px;
+    background:var(--paper-dim);
+  }
+  .fact-card + .fact-card{ margin-top:14px; }
+  .fact-label{ font-family:'JetBrains Mono', monospace; font-size:12px; color:var(--rose); letter-spacing:0.06em; }
+  .fact-val{ font-size:15px; margin-top:4px; }
+
+  /* skills — two systems */
+  .skill-systems{ display:grid; grid-template-columns:1fr 1fr; gap:28px; }
+  @media (max-width:760px){ .skill-systems{grid-template-columns:1fr;} }
+  .system-card{
+    border-radius:14px; padding:28px 26px;
+    border:1px solid var(--line-dark);
+  }
+  .system-card.elastic{ background:var(--ink); color:#E8EAF3; }
+  .system-card.power{ background:#fff; }
+  .system-head{ display:flex; align-items:center; gap:10px; margin-bottom:18px; }
+  .dot{ width:9px; height:9px; border-radius:50%; }
+  .system-card.elastic .dot{ background:var(--teal); }
+  .system-card.power .dot{ background:var(--rose); }
+  .system-name{ font-family:'JetBrains Mono', monospace; font-size:14px; letter-spacing:0.03em; }
+  .chip-row{ display:flex; flex-wrap:wrap; gap:8px; }
+  .chip{
+    font-size:12.5px; padding:6px 11px; border-radius:20px;
+    font-family:'JetBrains Mono', monospace;
+  }
+  .system-card.elastic .chip{ background:rgba(47,167,155,0.14); color:#9FD8CF; border:1px solid rgba(159,216,207,0.25); }
+  .system-card.power .chip{ background:rgba(163,75,99,0.08); color:var(--rose); border:1px solid rgba(163,75,99,0.25); }
+
+  /* experience */
+  .exp-item{ border-left:2px solid var(--line-dark); padding:2px 0 28px 26px; position:relative; }
+  .exp-item::before{
+    content:""; position:absolute; left:-6.5px; top:2px; width:11px; height:11px;
+    border-radius:50%; background:var(--teal); border:2px solid var(--paper);
+  }
+  .exp-role{ font-family:'Fraunces', serif; font-size:20px; font-weight:600; }
+  .exp-meta{ font-family:'JetBrains Mono', monospace; font-size:12.5px; color:var(--slate); margin:4px 0 10px; }
+  .exp-item ul{ margin:0; padding-left:18px; }
+  .exp-item li{ font-size:15px; color:#2B3145; margin-bottom:6px; max-width:70ch; }
+
+  /* projects */
+  .proj-grid{ display:grid; grid-template-columns:repeat(3, 1fr); gap:20px; }
+  @media (max-width:900px){ .proj-grid{grid-template-columns:1fr;} }
+  .proj-card{
+    background:#fff; border:1px solid var(--line-dark); border-radius:12px; padding:22px;
+    transition:transform .25s ease, box-shadow .25s ease;
+  }
+  .proj-card:hover{ transform:translateY(-4px); box-shadow:0 14px 30px rgba(18,24,43,0.08); }
+  .proj-tag{ font-family:'JetBrains Mono', monospace; font-size:11.5px; color:var(--teal); letter-spacing:0.05em; }
+  .proj-title{ font-family:'Fraunces', serif; font-size:18px; font-weight:600; margin:8px 0 10px; }
+  .proj-card p{ font-size:14px; color:var(--slate); margin:0; }
+
+  /* hobbies */
+  .hobby-row{ display:flex; flex-wrap:wrap; gap:16px; }
+  .hobby-pill{
+    font-family:'Fraunces', serif; font-style:italic; font-size:17px;
+    padding:16px 22px; border-radius:40px; background:var(--paper-dim);
+    border:1px solid var(--line-dark);
+  }
+
+  /* side hustle */
+  .verse-panel{
+    background:var(--ink); color:#EDE7DA; border-radius:18px;
+    padding:56px 6vw; margin:0 6vw; position:relative; overflow:hidden;
+  }
+  .verse-panel::before{
+    content:"“"; position:absolute; font-family:'Fraunces', serif; font-size:280px;
+    color:rgba(255,255,255,0.05); top:-60px; left:20px; line-height:1;
+  }
+  .verse-inner{ position:relative; max-width:640px; }
+  .verse-eyebrow{ font-family:'JetBrains Mono', monospace; color:var(--gold); font-size:13px; letter-spacing:0.08em; }
+  .verse-title{ font-family:'Fraunces', serif; font-size:clamp(26px,3.6vw,38px); font-weight:600; margin:14px 0 16px; }
+  .verse-inner p{ color:#C9C4B8; font-size:15.5px; max-width:56ch; }
+  .cta{
+    display:inline-flex; align-items:center; gap:10px; margin-top:26px;
+    background:var(--gold); color:#12182B; font-weight:600; font-size:14px;
+    padding:13px 24px; border-radius:8px; text-decoration:none;
+    font-family:'Inter', sans-serif;
+    transition:transform .2s ease, box-shadow .2s ease;
+  }
+  .cta:hover{ transform:translateY(-2px); box-shadow:0 10px 20px rgba(201,162,39,0.25); }
+
+  /* connect */
+  .connect-grid{ display:flex; flex-wrap:wrap; gap:14px; }
+  .connect-card{
+    display:flex; align-items:center; gap:12px;
+    border:1px solid var(--line-dark); border-radius:10px; padding:15px 20px;
+    text-decoration:none; color:var(--ink); background:#fff;
+    font-family:'JetBrains Mono', monospace; font-size:14px;
+    transition:border-color .2s ease, transform .2s ease;
+    flex:1 1 220px;
+  }
+  .connect-card:hover{ border-color:var(--teal); transform:translateY(-2px); }
+  .connect-ico{ width:20px; height:20px; flex-shrink:0; }
+
+  footer{
+    text-align:center; padding:34px 6vw 50px; color:var(--slate); font-size:13px;
+    font-family:'JetBrains Mono', monospace;
+  }
+
+  /* ---------- BOOK PREVIEW ---------- */
+.book-wrap{ display:flex; flex-direction:column; align-items:center; }
+.book-meta{ text-align:center; margin-bottom:28px; }
+.book-title{ font-family:'Fraunces', serif; font-weight:600; font-size:22px; }
+.book-sub{ font-family:'JetBrains Mono', monospace; font-size:12.5px; color:var(--slate); margin-top:6px; }
+
+.book-frame{ display:flex; align-items:center; gap:18px; width:100%; max-width:640px; }
+.book-nav{
+  background:none; border:1px solid var(--line-dark); border-radius:50%;
+  width:40px; height:40px; font-size:20px; cursor:pointer; color:var(--ink);
+  flex-shrink:0; transition:border-color .2s ease, transform .2s ease;
+}
+.book-nav:hover{ border-color:var(--teal); transform:scale(1.05); }
+.book-nav:disabled{ opacity:0.3; cursor:not-allowed; transform:none; }
+
+.book-page-stage{
+  position:relative; flex:1; aspect-ratio:3/4; max-height:460px;
+  background:#fff; border:1px solid var(--line-dark); border-radius:6px;
+  box-shadow:0 18px 40px rgba(18,24,43,0.12);
+  perspective:1400px;
+  overflow:hidden;
+}
+.book-page{
+  position:absolute; inset:0; padding:34px 30px;
+  display:flex; flex-direction:column;
+  opacity:0; transform:rotateY(14deg); transform-origin:left center;
+  transition:opacity .5s ease, transform .5s ease;
+  pointer-events:none;
+  background:#fff;
+}
+.book-page.active{ opacity:1; transform:rotateY(0deg); pointer-events:auto; }
+.page-num{ font-family:'JetBrains Mono', monospace; font-size:11.5px; color:var(--rose); margin-bottom:18px; }
+.page-text{ font-family:'Fraunces', serif; font-style:italic; font-size:16.5px; color:var(--ink); line-height:1.85; }
+.page-img{ width:100%; height:auto; border-radius:4px; }
+
+.book-page.locked{ background:var(--paper-dim); justify-content:center; align-items:center; text-align:center; }
+.book-page.locked .page-text{ font-style:normal; font-family:'Inter', sans-serif; font-size:14px; color:var(--slate); max-width:26ch; }
+.book-page.locked .cta{ margin-top:20px; padding:11px 20px; font-size:13px; }
+
+.book-dots{ display:flex; gap:8px; margin-top:22px; }
+.book-dots button{
+  width:8px; height:8px; border-radius:50%; border:none;
+  background:var(--line-dark); cursor:pointer; padding:0;
+  transition:background .2s ease, transform .2s ease;
+}
+.book-dots button.active{ background:var(--teal); transform:scale(1.3); }
+
+@media (max-width:600px){
+  .book-frame{ gap:10px; }
+  .book-page{ padding:24px 20px; }
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="brand">sonal<span>.</span>honny</div>
+  <div class="navlinks">
+    <a href="#about">about</a>
+    <a href="#skills">skills</a>
+    <a href="#experience">experience</a>
+    <a href="#projects">projects</a>
+    <a href="#hustle">poetry</a>
+    <a href="#connect">connect</a>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="hero-system">
+    <div class="eyebrow">// SYSTEM.STATUS</div>
+    <div class="terminal" id="terminal"></div>
+    <h1 class="hero-name">Sonal Honny</h1>
+    <p class="hero-tag">Elastic Certified Engineer, honing Observability,Telemetry bridging into the Microsoft Power Platform &amp; Copilot Studio ecosystem.</p>
+  </div>
+  <div class="hero-verse">
+    <div class="verse-label">// a forever learner on the path to self discovery</div>
+    <p class="poem-line" id="poemLine">In every cluster, with her own pattern -<br>in every stanza, her heart.</p>
+    <p class="poem-sign">— writes poems for herself, and strangers</p>
+  </div>
+</header>
+
+<section id="about">
+  <div class="section-head"><span class="section-num">01</span><span class="section-title">About</span><span class="rule"></span></div>
+  <div class="about-grid reveal">
+    <div>
+      <p>I'm a Technical Consultant at Gios Technology, where I spend my days brainstorming with the Elastic Stack — migrating clusters, building Kibana dashboards, and keeping observability pipelines honest and unstuck. That's the world I am thriving in.</p>
+      <p>Alongside it, I'm building a second set of skills in the Microsoft ecosystem: Power BI, Power Query, and most recently Copilot Studio, where I completed Microsoft's training on building agents. The worlds are different, but eventually it really is about the same - taking messy, scattered information and giving it structure people can act upon.</p>
+      <p>Outside of both, I write and weave stories for my imagination. Custom poems and song lyrics too for people who want to say something they can't quite put into words themselves - that's a separate thread of my life, further down.</p>
+    </div>
+    <div>
+      <div class="fact-card">
+        <div class="fact-label">BASE</div>
+        <div class="fact-val">India [remote / hybrid / freelance friendly]</div>
+      </div>
+      <div class="fact-card">
+        <div class="fact-label">CURRENTLY</div>
+        <div class="fact-val">Technical Consultant, Gios Technology</div>
+      </div>
+      <div class="fact-card">
+        <div class="fact-label">LEARNING</div>
+        <div class="fact-val">Copilot Studio agent building, Power Automate, Power Apps</div>
+      </div>
+      <div class="fact-card">
+        <div class="fact-label">EDUCATION</div>
+        <div class="fact-val">B.Tech CSE, BIT Mesra</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="skills">
+  <div class="section-head"><span class="section-num">02</span><span class="section-title">Two stacks, One habit of mind, A constant grind</span><span class="rule"></span></div>
+  <div class="skill-systems reveal">
+    <div class="system-card elastic">
+      <div class="system-head"><span class="dot"></span><span class="system-name">elastic_stack</span></div>
+      <div class="chip-row">
+        <span class="chip">Elasticsearch</span>
+        <span class="chip">Kibana</span>
+        <span class="chip">Logstash</span>
+        <span class="chip">Elastic Cloud</span>
+        <span class="chip">ILM</span>
+        <span class="chip">Kafka</span>
+        <span class="chip">NiFi</span>
+        <span class="chip">Python / SQL</span>
+      </div>
+    </div>
+    <div class="system-card power">
+      <div class="system-head"><span class="dot"></span><span class="system-name">power_platform_&amp;_m365</span></div>
+      <div class="chip-row">
+        <span class="chip">Power BI</span>
+        <span class="chip">Power Query</span>
+        <span class="chip">Copilot Studio</span>
+        <span class="chip">DAX (in progress)</span>
+        <span class="chip">Power Automate (in progress)</span>
+        <span class="chip">Microsoft 365</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="experience">
+  <div class="section-head"><span class="section-num">03</span><span class="section-title">Experience</span><span class="rule"></span></div>
+  <div class="exp-item reveal">
+    <div class="exp-role">Technical Consultant — Gios Technology</div>
+    <div class="exp-meta">JAN 2025 — PRESENT · promoted from Technical Consultant Intern, Jul 2025</div>
+    <ul>
+      <li>Led migration of enterprise ELK environments from on-premises Elasticsearch v8 to Elastic Cloud v9.</li>
+      <li>Built secure Filebeat-to-Logstash ingestion pipelines and real-time Kibana dashboards for operational monitoring.</li>
+      <li>Designed Disaster Recovery (DC-DR) templates and Python utilities to automate failover and validate sync across clusters.</li>
+      <li>Implemented Index Lifecycle Management (Hot/Cold/Frozen) and analyzed diagnostic bundles for cluster health.</li>
+      <li>Designed Elastic Cloud architectures and migration strategies for a real estate client based on workload characteristics,
+retention requirements, scalability needs, and budget considerations</li>
+      <li>Built Elasticsearch ingest node pipelines using ETL principles to parse, enrich, transform, and index high-volume log
+data efficiently</li>
+<li>Configured Elastic detection rules, server log connectors, Elasticsearch Watchers, and alerting mechanisms to enable
+proactive monitoring and incident response</li>
+    </ul>
+  </div>
+</section>
+
+<section id="projects">
+  <div class="section-head"><span class="section-num">04</span><span class="section-title">Projects</span><span class="rule"></span></div>
+  <div class="proj-grid reveal">
+    <div class="proj-card">
+      <div class="proj-tag">POWER BI</div>
+      <div class="proj-title">License Utilization Dashboard</div>
+      <p>Classifies users into Active, Passive, and Dormant tiers to surface underused software licenses and cut costs.</p>
+    </div>
+    <div class="proj-card">
+      <div class="proj-tag">ELK STACK</div>
+      <div class="proj-title">Monitoring &amp; KPI Dashboard</div>
+      <p>End-to-end Kibana solution tracking infrastructure KPIs, with Watcher-based alerting for anomalies.</p>
+    </div>
+   <div class="proj-card">
+      <div class="proj-tag">Tableau</div>
+      <div class="proj-title">Bank Loan Analysis Dashboard</div>
+      <p>Interactive drill-downs across loan portfolios and credit risk indicators for lending pattern insights.</p>
+    </div>
+    <div class="proj-card">
+      <div class="proj-tag">Bolt AI </div>
+      <div class="proj-title">Food Delivery to NGO</div>
+      <p>A web-app made using Firebase, Google Maps to build a infrastructure that can support food deliveries from Restaurants to NGO, saving food and serving people.</p>
+    </div>
+    <div class="proj-card">
+      <div class="proj-tag">Logstash Server Log</div>
+      <div class="proj-title">Alerts generation</div>
+      <p>Data fed into the system from live telemetry, parsed via Logstash pipeline, passed via Elastic alerts, monitored through Server log and shows the end outputs.</p>
+    </div>
+     <div class="proj-card">
+      <div class="proj-tag">Copilot Studio and Power Automate</div>
+      <div class="proj-title">Agent Building in Copilot Studio</div>
+      <p>Creating agents from templates, and customising them with required integrations, designing workflows, solving specific problems.</p>
+    </div>
+    
+  </div>
+</section>
+
+<section id="hobbies">
+  <div class="section-head"><span class="section-num">05</span><span class="section-title">Off the clock</span><span class="rule"></span></div>
+  <div class="hobby-row reveal">
+    <span class="hobby-pill">Lively discussions on world topics</span>
+    <span class="hobby-pill">Getting lost in other cultures</span>
+    <span class="hobby-pill">Books, Anime and Sleep</span>
+  </div>
+</section>
+<section id="book">
+  <div class="section-head"><span class="section-num"></span><span class="section-title">Preview my book</span><span class="rule"></span></div>
+  <div class="book-wrap reveal">
+    <div class="book-meta">
+      <div class="book-title">Working Title — A Poetry Collection</div>
+      <div class="book-sub">100 pages · showing a 5-page preview</div>
+    </div>
+
+    <div class="book-frame">
+      <button class="book-nav prev" id="bookPrev" aria-label="Previous page">‹</button>
+
+      <div class="book-page-stage">
+        <!-- Each .book-page is one preview page. Add your own text or image here. -->
+        <div class="book-page active" data-page="1">
+          <div class="page-num">Page 1</div>
+          <p class="page-text">Strings of Attachment<br>Threads binding us to one another and the Universe</p>
+          <!-- To use a scanned image instead of text, replace the <p> above with:
+          <img class="page-img" src="page1.jpg" alt="Book page 1"> -->
+        </div>
+
+        <div class="book-page" data-page="2">
+          <div class="page-num">Page 2</div>
+          <p class="page-text">To the Love that made me powerful enough, <br>
+            To the person who made me love myself,<br>
+            On gentle days like serene rain and on tough days little extra...</p>
+        </div>
+
+        <div class="book-page" data-page="3">
+          <div class="page-num">Page 3 </div>
+          <p class="page-text">What is Love, if not an excruciating pain from a knife stabbed in your heart you happily took from them?
+          <p class="page-text">A girl who fell and grew in Love...</p>
+        </div>
+
+        <div class="book-page" data-page="4">
+          <div class="page-num">Page 4</div>
+          <p class="page-text">What's your idea of love?<br>
+          Is it resting head on shoulder<br> Or holding hands at random<br> Or is it a deep conversation<br>
+
+          What's your thought on love?<br> Is it peaceful place to lean on<br> Or is it a chaotic fun ride turn<br>
+          Or is it a wrapped place for burns<br>
+
+What's your dream about love?<br> Is it a castle of rules and norms<br> Or is it carefree like bird's form<br>
+Or is it building a home in each other<br>
+
+What's your hope for love?<br>
+Is it a peaceful starry night sleep<br> Or a gentle caress deep<br>
+Or lifelong promises to keep..
+</p>
+        </div>
+
+        <!-- <div class="book-page" data-page="5">
+          <div class="page-num">Page 5 / 100</div>
+          <p class="page-text">Fifth page content goes here.</p>
+        </div> -->
+
+        <!-- Locked "page" shown after page 5 -->
+        <div class="book-page locked" data-page="locked">
+          <div class="page-num">Pages 5 onwards</div>
+          <p class="page-text">The preview ends here. The rest of the collection isn't posted online.</p>
+          <a class="cta" href="https://www.fiverr.com/sonalhonny/buying?source=avatar_menu_profile" target="_blank" rel="noopener">Get in touch to read more ↗</a>
+        </div>
+      </div>
+
+      <button class="book-nav next" id="bookNext" aria-label="Next page">›</button>
+    </div>
+
+    <div class="book-dots" id="bookDots"></div>
+  </div>
+</section>
+
+
+<section id="hustle">
+  <div class="verse-panel reveal">
+    <div class="verse-inner">
+      <div class="verse-eyebrow">// HEART HUSTLE</div>
+      <div class="verse-title">Poetry &amp; Song Writing</div>
+      <p>I write custom poems and song lyrics for people - anniversaries, apologies, tributes, and the things that are easier to say in verse than in a text message. Each piece is written from scratch around your story.</p>
+      <p>Do you have someone you wanted to speak but it feels like forever before you reached out to them?</p>
+      <a class="cta" href="https://www.fiverr.com/sonalhonny/buying?source=avatar_menu_profile" target="_blank" rel="noopener">Let me hold your feelings ↗</a>
+    </div>
+  </div>
+</section>
+
+<section id="connect">
+  <div class="section-head"><span class="section-num">06</span><span class="section-title">Connect</span><span class="rule"></span></div>
+  <div class="connect-grid reveal">
+    <a class="connect-card" href="https://www.linkedin.com/in/sonalhonny/" target="_blank" rel="noopener">
+      <svg class="connect-ico" viewBox="0 0 24 24" fill="none"><path d="M4.98 3.5C4.98 4.88 3.87 6 2.5 6S0 4.88 0 3.5 1.12 1 2.5 1s2.48 1.12 2.48 2.5zM.5 8h4V23h-4V8zm7.5 0h3.8v2.05h.05c.53-1 1.83-2.05 3.77-2.05 4.03 0 4.78 2.65 4.78 6.1V23h-4v-6.9c0-1.65-.03-3.77-2.3-3.77-2.3 0-2.65 1.8-2.65 3.65V23h-4V8z" fill="#2FA79B"/></svg>
+      LinkedIn
+    </a>
+    <a class="connect-card" href="https://github.com/sonalhonny71" target="_blank" rel="noopener">
+      <svg class="connect-ico" viewBox="0 0 24 24" fill="none"><path d="M12 .5C5.65.5.5 5.65.5 12c0 5.08 3.29 9.39 7.86 10.91.57.1.78-.25.78-.55v-2.15c-3.2.7-3.87-1.36-3.87-1.36-.53-1.33-1.29-1.69-1.29-1.69-1.05-.72.08-.7.08-.7 1.17.08 1.78 1.2 1.78 1.2 1.03 1.77 2.71 1.26 3.37.96.1-.75.4-1.26.73-1.55-2.55-.29-5.24-1.28-5.24-5.68 0-1.26.45-2.28 1.19-3.08-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.18 1.18a11 11 0 0 1 5.79 0c2.2-1.49 3.17-1.18 3.17-1.18.64 1.59.24 2.76.12 3.05.74.8 1.19 1.82 1.19 3.08 0 4.41-2.7 5.38-5.27 5.67.42.36.78 1.08.78 2.17v3.22c0 .3.21.66.79.55A10.51 10.51 0 0 0 23.5 12C23.5 5.65 18.35.5 12 .5z" fill="#A34B63"/></svg>
+      GitHub
+    </a>
+    <a class="connect-card" href="mailto:sonalhonny@gmail.com">
+      <svg class="connect-ico" viewBox="0 0 24 24" fill="none"><path d="M2 5h20v14H2z" stroke="#C9A227" stroke-width="1.6"/><path d="M2 6l10 8L22 6" stroke="#C9A227" stroke-width="1.6" fill="none"/></svg>
+      sonalhonny@gmail.com
+    </a>
+    <a class="connect-card" href="https://www.fiverr.com/sonalhonny/buying?source=avatar_menu_profile" target="_blank" rel="noopener">
+      <svg class="connect-ico" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10.5" stroke="#2FA79B" stroke-width="1.6"/><path d="M9 15V9.8c0-1 .7-1.8 1.9-1.8H15" stroke="#2FA79B" stroke-width="1.6" stroke-linecap="round"/><path d="M8.5 12h5.5" stroke="#2FA79B" stroke-width="1.6" stroke-linecap="round"/></svg>
+      Fiverr - Poetry 
+    </a>
+   
+  </div>
+</section>
+
+<footer>designed &amp; maintained by Sonal Honny · </footer>
+
+<script>
+  // Terminal boot lines (looping status feed on the tech side)
+  const lines = [
+    "$ who am i",
+    "sonal_honny - technical_consultant",
+    "$ status --stack elastic",
+    "cluster: healthy  |  uptime: 1+ yr",
+    "$ status --stack power_platform",
+    "copilot_studio: training_complete",
+    "power_bi: active  |  power_automate: learning",
+    "$ _"
+  ];
+  const termEl = document.getElementById('terminal');
+  const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  function typeLines(el, allLines, speed){
+    let li = 0, ci = 0;
+    let built = "";
+    function step(){
+      if(li >= allLines.length){
+        el.innerHTML = built + '<span class="cursor"></span>';
+        return;
+      }
+      const line = allLines[li];
+      if(ci <= line.length){
+        el.innerHTML = built + line.slice(0, ci) + '<span class="cursor"></span>';
+        ci++;
+        setTimeout(step, speed);
+      } else {
+        built += line + "\n";
+        li++; ci = 0;
+        setTimeout(step, 260);
+      }
+    }
+    step();
+  }
+
+  if(prefersReduced){
+    termEl.textContent = lines.join("\n");
+  } else {
+    typeLines(termEl, lines, 22);
+  }
+
+  // Poem line reveal
+  requestAnimationFrame(() => {
+    setTimeout(() => document.getElementById('poemLine').classList.add('show'), 400);
+  });
+
+  // Scroll reveal for sections
+  const revealEls = document.querySelectorAll('.reveal');
+  if('IntersectionObserver' in window && !prefersReduced){
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if(entry.isIntersecting){
+          entry.target.classList.add('show');
+          io.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.15 });
+    revealEls.forEach(el => io.observe(el));
+  } else {
+    revealEls.forEach(el => el.classList.add('show'));
+  }
+
+  // Book preview navigation
+(function(){
+  const pages = Array.from(document.querySelectorAll('.book-page'));
+  const dotsWrap = document.getElementById('bookDots');
+  const prevBtn = document.getElementById('bookPrev');
+  const nextBtn = document.getElementById('bookNext');
+  let current = 0;
+
+  pages.forEach((_, i) => {
+    const dot = document.createElement('button');
+    dot.setAttribute('aria-label', 'Go to page ' + (i + 1));
+    dot.addEventListener('click', () => goTo(i));
+    dotsWrap.appendChild(dot);
+  });
+  const dots = Array.from(dotsWrap.children);
+
+  function goTo(i){
+    pages[current].classList.remove('active');
+    dots[current].classList.remove('active');
+    current = i;
+    pages[current].classList.add('active');
+    dots[current].classList.add('active');
+    prevBtn.disabled = current === 0;
+    nextBtn.disabled = current === pages.length - 1;
+  }
+
+  prevBtn.addEventListener('click', () => { if(current > 0) goTo(current - 1); });
+  nextBtn.addEventListener('click', () => { if(current < pages.length - 1) goTo(current + 1); });
+
+  goTo(0);
+})();
+</script>
+
+</body>
+</html>
