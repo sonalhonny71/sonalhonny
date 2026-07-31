@@ -247,59 +247,124 @@
     font-family:'JetBrains Mono', monospace;
   }
 
-  /* ---------- BOOK PREVIEW ---------- */
-.book-wrap{ display:flex; flex-direction:column; align-items:center; }
-.book-meta{ text-align:center; margin-bottom:28px; }
-.book-title{ font-family:'Fraunces', serif; font-weight:600; font-size:22px; }
-.book-sub{ font-family:'JetBrains Mono', monospace; font-size:12.5px; color:var(--slate); margin-top:6px; }
+  /* ==========================================================
+     BOOK PREVIEW
+     To add a new page: copy a .book-page block inside
+     .book-page-stage (before the .locked page), give it a
+     unique data-page value. If it should be clickable and open
+     a full poem, add class="clickable" and data-poem="pageN",
+     then add a matching "pageN" entry to the `poems` object
+     in the <script> at the bottom. Nothing else needs to change —
+     nav arrows / dots / clipping all adapt automatically.
+     ========================================================== */
+  .book-wrap{ display:flex; flex-direction:column; align-items:center; }
+  .book-meta{ text-align:center; margin-bottom:28px; }
+  .book-title{ font-family:'Fraunces', serif; font-weight:600; font-size:22px; }
+  .book-sub{ font-family:'JetBrains Mono', monospace; font-size:12.5px; color:var(--slate); margin-top:6px; }
 
-.book-frame{ display:flex; align-items:center; gap:18px; width:100%; max-width:640px; }
-.book-nav{
-  background:none; border:1px solid var(--line-dark); border-radius:50%;
-  width:40px; height:40px; font-size:20px; cursor:pointer; color:var(--ink);
-  flex-shrink:0; transition:border-color .2s ease, transform .2s ease;
-}
-.book-nav:hover{ border-color:var(--teal); transform:scale(1.05); }
-.book-nav:disabled{ opacity:0.3; cursor:not-allowed; transform:none; }
+  .book-frame{
+    display:flex; flex-wrap:nowrap; align-items:center; justify-content:center;
+    gap:16px; width:100%; max-width:560px; margin:0 auto;
+  }
+  .book-nav{
+    background:none; border:1px solid var(--line-dark); border-radius:50%;
+    width:40px; height:40px; font-size:20px; cursor:pointer; color:var(--ink);
+    flex:0 0 40px; transition:border-color .2s ease, transform .2s ease, opacity .2s ease;
+  }
+  .book-nav:hover:not(:disabled){ border-color:var(--teal); transform:scale(1.05); }
+  .book-nav:disabled{ opacity:0.25; cursor:not-allowed; transform:none; }
 
-.book-page-stage{
-  position:relative; flex:1; aspect-ratio:3/4; max-height:460px;
-  background:#fff; border:1px solid var(--line-dark); border-radius:6px;
-  box-shadow:0 18px 40px rgba(18,24,43,0.12);
-  perspective:1400px;
-  overflow:hidden;
-}
-.book-page{
-  position:absolute; inset:0; padding:34px 30px;
-  display:flex; flex-direction:column;
-  opacity:0; transform:rotateY(14deg); transform-origin:left center;
-  transition:opacity .5s ease, transform .5s ease;
-  pointer-events:none;
-  background:#fff;
-}
-.book-page.active{ opacity:1; transform:rotateY(0deg); pointer-events:auto; }
-.page-num{ font-family:'JetBrains Mono', monospace; font-size:11.5px; color:var(--rose); margin-bottom:18px; }
-.page-text{ font-family:'Fraunces', serif; font-style:italic; font-size:16.5px; color:var(--ink); line-height:1.85; }
-.page-img{ width:100%; height:auto; border-radius:4px; }
+  /* Fixed-size stage — every page clips to this box, no matter its content */
+  .book-page-stage{
+    position:relative; flex:1 1 auto; min-width:0;
+    height:230px;
+    background:#fff; border:1px solid var(--line-dark); border-radius:6px;
+    box-shadow:0 18px 40px rgba(18,24,43,0.12);
+    overflow:hidden;
+  }
+  .book-page{
+    position:absolute; inset:0; box-sizing:border-box;
+    padding:24px 26px;
+    display:flex; flex-direction:column;
+    opacity:0; transform:rotateY(14deg); transform-origin:left center;
+    transition:opacity .5s ease, transform .5s ease;
+    pointer-events:none;
+    background:#fff;
+    overflow:hidden;
+  }
+  .book-page.active{ opacity:1; transform:rotateY(0deg); pointer-events:auto; }
+  .page-num{ font-family:'JetBrains Mono', monospace; font-size:11.5px; color:var(--rose); margin-bottom:12px; flex:0 0 auto; }
 
-.book-page.locked{ background:var(--paper-dim); justify-content:center; align-items:center; text-align:center; }
-.book-page.locked .page-text{ font-style:normal; font-family:'Inter', sans-serif; font-size:14px; color:var(--slate); max-width:26ch; }
-.book-page.locked .cta{ margin-top:20px; padding:11px 20px; font-size:13px; }
+  /* Clips to exactly 4 lines regardless of how much text is inside */
+  .page-text{
+    font-family:'Fraunces', serif; font-style:italic; font-size:15px; color:var(--ink); line-height:1.7;
+    display:-webkit-box; -webkit-box-orient:vertical; -webkit-line-clamp:4; overflow:hidden;
+    margin:0; flex:0 0 auto;
+  }
+  .page-img{ width:100%; height:auto; border-radius:4px; }
 
-.book-dots{ display:flex; gap:8px; margin-top:22px; }
-.book-dots button{
-  width:8px; height:8px; border-radius:50%; border:none;
-  background:var(--line-dark); cursor:pointer; padding:0;
-  transition:background .2s ease, transform .2s ease;
-}
-.book-dots button.active{ background:var(--teal); transform:scale(1.3); }
+  .book-page.locked{ background:var(--paper-dim); justify-content:center; align-items:center; text-align:center; }
+  .book-page.locked .page-text{ -webkit-line-clamp:unset; font-style:normal; font-family:'Inter', sans-serif; font-size:14px; color:var(--slate); max-width:26ch; }
+  .book-page.locked .cta{ margin-top:16px; padding:11px 20px; font-size:13px; }
 
-@media (max-width:600px){
-  .book-frame{ gap:10px; }
-  .book-page{ padding:24px 20px; }
-}
+  .book-page.clickable{ cursor:pointer; }
+  .book-page.clickable:hover{ box-shadow: inset 0 0 0 2px var(--teal); }
+  .read-more{
+    margin-top:auto; padding-top:10px; font-family:'JetBrains Mono', monospace; font-size:11px;
+    color:var(--teal); letter-spacing:0.02em; flex:0 0 auto;
+  }
+
+  .book-dots{ display:flex; gap:8px; margin-top:22px; }
+  .book-dots button{
+    width:8px; height:8px; border-radius:50%; border:none;
+    background:var(--line-dark); cursor:pointer; padding:0;
+    transition:background .2s ease, transform .2s ease;
+  }
+  .book-dots button.active{ background:var(--teal); transform:scale(1.3); }
+
+  @media (max-width:600px){
+    .book-frame{ gap:8px; }
+    .book-nav{ width:34px; height:34px; flex-basis:34px; font-size:18px; }
+    .book-page{ padding:18px 18px; }
+    .page-text{ font-size:14px; }
+  }
+
+  /* ---------- FULL POEM MODAL (dark theme, matches hero) ---------- */
+  .poem-modal{
+    position:fixed; inset:0; z-index:200;
+    background:rgba(18,24,43,0.92); backdrop-filter:blur(4px);
+    display:flex; align-items:center; justify-content:center;
+    padding:6vh 5vw;
+    opacity:0; visibility:hidden;
+    transition:opacity .3s ease, visibility .3s ease;
+  }
+  .poem-modal.open{ opacity:1; visibility:visible; }
+  .poem-modal-inner{
+    background:var(--ink); color:#EDE7DA;
+    width:100%; max-width:620px; max-height:78vh;
+    overflow-y:auto; border-radius:14px; padding:48px 42px;
+    position:relative; box-shadow:0 30px 60px rgba(0,0,0,0.5);
+  }
+  .poem-modal-close{
+    position:absolute; top:16px; right:18px;
+    background:none; border:none; color:#EDE7DA; font-size:26px;
+    cursor:pointer; line-height:1;
+  }
+  .poem-modal-close:hover{ color:var(--teal); }
+  .poem-modal-label{
+    font-family:'JetBrains Mono', monospace; font-size:12.5px; color:var(--gold); letter-spacing:0.06em;
+  }
+  .poem-modal-title{
+    font-family:'Fraunces', serif; font-size:24px; font-weight:600; margin:14px 0 26px;
+  }
+  .poem-modal-text p{
+    font-family:'Fraunces', serif; font-style:italic; font-size:16px; line-height:1.95;
+    color:#C9C4B8; margin:0 0 22px;
+  }
 </style>
 </head>
+
+
 <body>
 
 <nav>
@@ -319,7 +384,7 @@
     <div class="eyebrow">// SYSTEM.STATUS</div>
     <div class="terminal" id="terminal"></div>
     <h1 class="hero-name">Sonal Honny</h1>
-    <p class="hero-tag">Elastic Certified Engineer, honing Observability,Telemetry bridging into the Microsoft Power Platform &amp; Copilot Studio ecosystem.</p>
+    <p class="hero-tag">Elastic Certified Engineer, honing Observability, Telemetry bridging into the Microsoft Power Platform &amp; Copilot Studio ecosystem.</p>
   </div>
   <div class="hero-verse">
     <div class="verse-label">// a forever learner on the path to self discovery</div>
@@ -452,6 +517,7 @@ proactive monitoring and incident response</li>
     <span class="hobby-pill">Books, Anime and Sleep</span>
   </div>
 </section>
+
 <section id="book">
   <div class="section-head"><span class="section-num"></span><span class="section-title">Preview my book</span><span class="rule"></span></div>
   <div class="book-wrap reveal">
@@ -464,52 +530,47 @@ proactive monitoring and incident response</li>
       <button class="book-nav prev" id="bookPrev" aria-label="Previous page">‹</button>
 
       <div class="book-page-stage">
-        <!-- Each .book-page is one preview page. Add your own text or image here. -->
+        <!-- Each .book-page below is one preview page.
+             Add / remove pages here freely — nav + dots adapt automatically. -->
+
         <div class="book-page active" data-page="1">
           <div class="page-num">Page 1</div>
           <p class="page-text">Strings of Attachment<br>Threads binding us to one another and the Universe</p>
-          <!-- To use a scanned image instead of text, replace the <p> above with:
-          <img class="page-img" src="page1.jpg" alt="Book page 1"> -->
         </div>
 
         <div class="book-page" data-page="2">
           <div class="page-num">Page 2</div>
-          <p class="page-text">To the Love that made me powerful enough, <br>
+          <p class="page-text">To the Love that made me powerful enough,<br>
             To the person who made me love myself,<br>
             On gentle days like serene rain and on tough days little extra...</p>
         </div>
 
         <div class="book-page" data-page="3">
-          <div class="page-num">Page 3 </div>
-          <p class="page-text">What is Love, if not an excruciating pain from a knife stabbed in your heart you happily took from them?
-          <p class="page-text">A girl who fell and grew in Love...</p>
+          <div class="page-num">Page 3</div>
+          <p class="page-text">What is Love, if not an excruciating pain from a knife stabbed in your heart you happily took from them?<br><br>A girl who fell and grew in Love...</p>
         </div>
 
-        <div class="book-page" data-page="4">
+        <div class="book-page clickable" data-page="4" data-poem="page4" id="bookPage4">
           <div class="page-num">Page 4</div>
           <p class="page-text">What's your idea of love?<br>
-          Is it resting head on shoulder<br> Or holding hands at random<br> Or is it a deep conversation<br>
-
-          What's your thought on love?<br> Is it peaceful place to lean on<br> Or is it a chaotic fun ride turn<br>
-          Or is it a wrapped place for burns<br>
-
-What's your dream about love?<br> Is it a castle of rules and norms<br> Or is it carefree like bird's form<br>
-Or is it building a home in each other<br>
-
-What's your hope for love?<br>
-Is it a peaceful starry night sleep<br> Or a gentle caress deep<br>
-Or lifelong promises to keep..
-</p>
+          Is it resting head on shoulder<br>
+          Or holding hands at random<br>
+          Or is it a deep conversation</p>
+          <div class="read-more">Click to read the full poem →</div>
         </div>
 
-        <!-- <div class="book-page" data-page="5">
-          <div class="page-num">Page 5 / 100</div>
-          <p class="page-text">Fifth page content goes here.</p>
-        </div> -->
+        <div class="book-page clickable" data-page="5" data-poem="page5" id="bookPage5">
+          <div class="page-num">Page 5</div>
+          <p class="page-text">Your words linger in my ears with a soft hush<br>
+             Whispers retrace all the embraces of previous<br>
+            Imagine the day we could say it out loud<br>
+            And not let our fears be profound</p>
+          <div class="read-more">Click to read the full poem →</div>
+        </div>
 
-        <!-- Locked "page" shown after page 5 -->
+        <!-- Locked "page" shown after the preview ends -->
         <div class="book-page locked" data-page="locked">
-          <div class="page-num">Pages 5 onwards</div>
+          <div class="page-num">Pages 6 onwards</div>
           <p class="page-text">The preview ends here. The rest of the collection isn't posted online.</p>
           <a class="cta" href="https://www.fiverr.com/sonalhonny/buying?source=avatar_menu_profile" target="_blank" rel="noopener">Get in touch to read more ↗</a>
         </div>
@@ -559,6 +620,18 @@ Or lifelong promises to keep..
 </section>
 
 <footer>designed &amp; maintained by Sonal Honny · </footer>
+
+<!-- Reusable full-poem popup, dark theme (matches hero ink background).
+     Any .book-page.clickable with a data-poem="pageX" attribute
+     will fill this in and open it — see `poems` object below. -->
+<div class="poem-modal" id="poemModal" aria-hidden="true">
+  <div class="poem-modal-inner">
+    <button class="poem-modal-close" id="poemModalClose" aria-label="Close poem">×</button>
+    <!-- <div class="poem-modal-label">// FULL POEM</div> -->
+    <h3 class="poem-modal-title" id="poemModalTitle"></h3>
+    <div class="poem-modal-text" id="poemModalText"></div>
+  </div>
+</div>
 
 <script>
   // Terminal boot lines (looping status feed on the tech side)
@@ -624,37 +697,129 @@ Or lifelong promises to keep..
     revealEls.forEach(el => el.classList.add('show'));
   }
 
-  // Book preview navigation
-(function(){
-  const pages = Array.from(document.querySelectorAll('.book-page'));
-  const dotsWrap = document.getElementById('bookDots');
-  const prevBtn = document.getElementById('bookPrev');
-  const nextBtn = document.getElementById('bookNext');
-  let current = 0;
+  // ---------------------------------------------------------
+  // BOOK PREVIEW — navigation (fully driven by however many
+  // .book-page elements exist; add/remove pages in the HTML
+  // above and this keeps working with no code changes here).
+  // ---------------------------------------------------------
+  (function(){
+    const pages = Array.from(document.querySelectorAll('.book-page'));
+    const dotsWrap = document.getElementById('bookDots');
+    const prevBtn = document.getElementById('bookPrev');
+    const nextBtn = document.getElementById('bookNext');
+    let current = 0;
 
-  pages.forEach((_, i) => {
-    const dot = document.createElement('button');
-    dot.setAttribute('aria-label', 'Go to page ' + (i + 1));
-    dot.addEventListener('click', () => goTo(i));
-    dotsWrap.appendChild(dot);
-  });
-  const dots = Array.from(dotsWrap.children);
+    pages.forEach((_, i) => {
+      const dot = document.createElement('button');
+      dot.setAttribute('aria-label', 'Go to page ' + (i + 1));
+      dot.addEventListener('click', () => goTo(i));
+      dotsWrap.appendChild(dot);
+    });
+    const dots = Array.from(dotsWrap.children);
 
-  function goTo(i){
-    pages[current].classList.remove('active');
-    dots[current].classList.remove('active');
-    current = i;
-    pages[current].classList.add('active');
-    dots[current].classList.add('active');
-    prevBtn.disabled = current === 0;
-    nextBtn.disabled = current === pages.length - 1;
-  }
+    function goTo(i){
+      pages[current].classList.remove('active');
+      dots[current].classList.remove('active');
+      current = i;
+      pages[current].classList.add('active');
+      dots[current].classList.add('active');
+      prevBtn.disabled = current === 0;
+      nextBtn.disabled = current === pages.length - 1;
+    }
 
-  prevBtn.addEventListener('click', () => { if(current > 0) goTo(current - 1); });
-  nextBtn.addEventListener('click', () => { if(current < pages.length - 1) goTo(current + 1); });
+    prevBtn.addEventListener('click', () => { if(current > 0) goTo(current - 1); });
+    nextBtn.addEventListener('click', () => { if(current < pages.length - 1) goTo(current + 1); });
 
-  goTo(0);
-})();
+    goTo(0);
+  })();
+
+  // ---------------------------------------------------------
+  // FULL POEM POPUPS — one shared modal, driven by a lookup
+  // table. To add a new clickable page:
+  //   1. Give its .book-page a class="clickable" and
+  //      data-poem="pageN" (see Page 4 / Page 5 above).
+  //   2. Add a "pageN": { title: "...", html: `...` } entry
+  //      below. That's the only JS edit ever needed.
+  // ---------------------------------------------------------
+  (function(){
+    const poems = {
+      page4: {
+        title: "What's Your Idea of Love?",
+        html: `
+          <p>What's your idea of love?<br>Is it resting head on shoulder<br>Or holding hands at random<br>Or is it a deep conversation</p>
+          <p>What's your thought on love?<br>Is it peaceful place to lean on<br>Or is it a chaotic fun ride turn<br>Or is it a wrapped place for burns</p>
+          <p>What's your dream about love?<br>Is it a castle of rules and norms<br>Or is it carefree like bird's form<br>Or is it building a home in each other</p>
+          <p>What's your hope for love?<br>Is it a peaceful starry night sleep<br>Or a gentle caress deep<br>Or lifelong promises to keep..</p>
+        `
+      },
+      page5: {
+        title: "My heart in the hidden casket",
+        html: `
+          <p>Your words linger in my ears with a soft hush <br>
+             Whispers retrace all the embraces of previous <br>
+             Imagine the day we could say it out loud<br>
+             And not let our fears be profound</p>
+          <p>What wonders would our eyes behold <br>
+             Or the twinkle will be so starry and bold <br>
+             The smiles won't have to wrapped under blanket <br>
+             No more burying the heart in hidden casket. </p>
+          <p> All the memoirs that I have gently packed <br>
+             With love and kept it sealed and concealed <br>
+             For years, I have kept us to me in private <br>
+             Hiding you even from my shadow’s trait. </p>
+            <p>You are a blessing and I am grateful each day <br>
+                I heartily wait for the final day.<br>
+                You have embraced me for so long I have forgotten<br> 
+                How to breathe without having your name taken</p>
+            <p>It is almost you and I are one entity<br>
+                 Bound by love, care, till an eternity<br>
+                 The independent person I have lost now<br>
+                 And head strong is new definition of my show. </p>
+            <p>I owe you the precious moments of courage <br>
+                For showing me how to be Brave <br>
+                I owe you the silent praises on a bad day-<br>
+                To remain in my energy was perfectly okay. </p>
+            <p> You have loved me in languages I never knew
+                Still you showed up and became one person crew <br>
+                 My tattered life has been sewn by your needles <br>
+                 My head stays light because of your weird riddles.</p>
+                 <p> Did I get lucky to find you,or eternally blessed <br>
+                     For something in the past life I lived <br>
+                Whatever it was and is at the moment,<br>
+                It will forever be you and I trapped in time's pendant.
+                </p>
+        `
+      }
+    };
+
+    const modal = document.getElementById('poemModal');
+    const titleEl = document.getElementById('poemModalTitle');
+    const textEl = document.getElementById('poemModalText');
+    const closeBtn = document.getElementById('poemModalClose');
+
+    function openModal(poemKey){
+      const poem = poems[poemKey];
+      if(!poem) return;
+      titleEl.textContent = poem.title;
+      textEl.innerHTML = poem.html;
+      modal.classList.add('open');
+      modal.setAttribute('aria-hidden', 'false');
+      document.body.style.overflow = 'hidden';
+    }
+    function closeModal(){
+      modal.classList.remove('open');
+      modal.setAttribute('aria-hidden', 'true');
+      document.body.style.overflow = '';
+    }
+
+    document.querySelectorAll('.book-page.clickable').forEach(page => {
+      page.addEventListener('click', () => openModal(page.dataset.poem));
+    });
+
+    closeBtn.addEventListener('click', closeModal);
+    modal.addEventListener('click', (e) => { if(e.target === modal) closeModal(); });
+    document.addEventListener('keydown', (e) => { if(e.key === 'Escape') closeModal(); });
+  })();
 </script>
 
 </body>
